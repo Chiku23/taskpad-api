@@ -5,14 +5,41 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use OpenApi\Attributes as OA;
 
 class AuthController extends Controller
 {
+    #[OA\Post(
+        path: "/api/login",
+        summary: "User login",
+        tags: ["Auth"],
+        parameters: [
+            new OA\Parameter(name: "email", in: "query", required: true, schema: new OA\Schema(type: "string")),
+            new OA\Parameter(name: "password", in: "query", required: true, schema: new OA\Schema(type: "string"))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "OK")
+        ]
+    )]
     public function login(Request $request)
     {
         return response()->json($request->all());
     }
 
+    #[OA\Post(
+        path: "/api/register",
+        summary: "User registration",
+        tags: ["Auth"],
+        parameters: [
+            new OA\Parameter(name: "name", in: "query", required: true, schema: new OA\Schema(type: "string")),
+            new OA\Parameter(name: "email", in: "query", required: true, schema: new OA\Schema(type: "string")),
+            new OA\Parameter(name: "password", in: "query", required: true, schema: new OA\Schema(type: "string")),
+            new OA\Parameter(name: "confirmpassword", in: "query", required: true, schema: new OA\Schema(type: "string"))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: "OK")
+        ]
+    )]
     public function register(Request $request)
     {
         $email = $request->email ?? '';
