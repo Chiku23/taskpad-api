@@ -2,7 +2,7 @@ name: Gemini PR Review
 on:
   pull_request:
     types: [opened, synchronize]
-    workflow_dispatch:
+  workflow_dispatch:
 
 jobs:
   review:
