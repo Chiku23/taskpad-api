@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use OpenApi\Attributes as OA;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -23,7 +24,34 @@ class AuthController extends Controller
     )]
     public function login(Request $request)
     {
-        return response()->json($request->all());
+        $email = $request->email ?? '';
+        $password = $request->password ?? '';
+
+        $user = new User;
+        $existingUser = $user->where('email',$email)->first();
+        
+        if(empty($existingUser)) {
+            return response()->json(["status"=>"false", "message"=>"User not found."]);
+        }
+
+        // Check password is correct
+        $checkPassword = Hash::check($password, $existingUser->password);
+        if(!$checkPassword) {
+            return response()->json(["status"=>"false", "message"=>"Invalid password."]);
+        }
+
+        // Generate the token
+        $token = $existingUser->createToken("taskpad")->plainTextToken;
+        
+        return response()->json([
+            "status"=>"true",
+            "message"=>"User found.",
+            "data"=>[
+                "token"=> $token,
+                "name"=> $existingUser->name,
+                "email"=> $existingUser->email
+            ]
+        ]);
     }
 
     #[OA\Post(
@@ -57,6 +85,9 @@ class AuthController extends Controller
             return response()->json(["status"=>"false", "message"=>"confirm password does not match."]);
         }
 
+        // hash the password
+        $hashedPassword = Hash::make($password);
+
         // Create user
         $user = new User;
         $existingUser = $user->where('email',$email)->first();
@@ -69,9 +100,40 @@ class AuthController extends Controller
         $newUser = $user->create([
             'name' => $name,
             'email' => $email,
-            'password' => $password
+            'password' => $hashedPassword
         ]);
 
-        return response()->json(["status"=>"true", "message"=>"user created."]);
+        return response()->json(["status"=>"true", "message"=>"user created.", "token"=>$token]);
     }
+
+    // Get the user
+    public function me(Request $request)
+    {
+        $user = $request->user();
+        
+        if($user) {
+            return response()->json([
+                "status"=>"true", 
+                "message"=>"User found.", 
+                "data"=>[
+                    "name"=> $user->name,
+                    "email"=> $user->email
+                ]
+            ]);
+        }else{
+            return response()->json(["status"=>"false", "message"=>"User not found."]);
+        }
+    }
+
+    // Logout User
+    public function logout(Request $request)
+    {
+        // Deletes only the current token used in this request
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            "status" => "true",
+            "message" => "Logged out."
+        ]);
+    }
+
 }
