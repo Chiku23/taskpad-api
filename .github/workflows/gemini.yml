@@ -1,4 +1,5 @@
 name: Gemini PR Review
+
 on:
   pull_request:
     types: [opened, synchronize]
@@ -9,11 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+      contents: read
+      
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Gemini AI Code Review
-        uses: mshick/gemini-review-action@v1 # Free community marketplace action
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: sshnaidm/gemini-code-review-action@v2
+        with:
+          gemini-key: ${{ secrets.GEMINI_API_KEY }}
