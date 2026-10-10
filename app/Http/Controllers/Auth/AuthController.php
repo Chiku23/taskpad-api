@@ -14,10 +14,16 @@ class AuthController extends Controller
         path: "/api/login",
         summary: "User login",
         tags: ["Auth"],
-        parameters: [
-            new OA\Parameter(name: "email", in: "query", required: true, schema: new OA\Schema(type: "string")),
-            new OA\Parameter(name: "password", in: "query", required: true, schema: new OA\Schema(type: "string"))
-        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["email", "password"],
+                properties: [
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "password", type: "string", format: "password")
+                ]
+            )
+        ),
         responses: [
             new OA\Response(response: 200, description: "OK")
         ]
@@ -31,13 +37,13 @@ class AuthController extends Controller
         $existingUser = $user->where('email',$email)->first();
         
         if(empty($existingUser)) {
-            return response()->json(["status"=>"false", "message"=>"User not found."]);
+            return response()->json(["status"=>"false", "message"=>"Invalid credenatials."]);
         }
 
         // Check password is correct
         $checkPassword = Hash::check($password, $existingUser->password);
         if(!$checkPassword) {
-            return response()->json(["status"=>"false", "message"=>"Invalid password."]);
+            return response()->json(["status"=>"false", "message"=>"Invalid credenatials."]);
         }
 
         // Generate the token
@@ -58,12 +64,18 @@ class AuthController extends Controller
         path: "/api/register",
         summary: "User registration",
         tags: ["Auth"],
-        parameters: [
-            new OA\Parameter(name: "name", in: "query", required: true, schema: new OA\Schema(type: "string")),
-            new OA\Parameter(name: "email", in: "query", required: true, schema: new OA\Schema(type: "string")),
-            new OA\Parameter(name: "password", in: "query", required: true, schema: new OA\Schema(type: "string")),
-            new OA\Parameter(name: "confirmpassword", in: "query", required: true, schema: new OA\Schema(type: "string"))
-        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ["name", "email", "password", "confirmpassword"],
+                properties: [
+                    new OA\Property(property: "name", type: "string"),
+                    new OA\Property(property: "email", type: "string", format: "email"),
+                    new OA\Property(property: "password", type: "string", format: "password"),
+                    new OA\Property(property: "confirmpassword", type: "string", format: "password")
+                ]
+            )
+        ),
         responses: [
             new OA\Response(response: 200, description: "OK")
         ]
@@ -103,10 +115,19 @@ class AuthController extends Controller
             'password' => $hashedPassword
         ]);
 
-        return response()->json(["status"=>"true", "message"=>"user created.", "token"=>$token]);
+        return response()->json(["status"=>"true", "message"=>"user created."]);
     }
 
-    // Get the user
+    #[OA\Get(
+        path: "/api/me",
+        summary: "Get authenticated user profile",
+        tags: ["Auth"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(response: 200, description: "OK"),
+            new OA\Response(response: 401, description: "Unauthenticated")
+        ]
+    )]
     public function me(Request $request)
     {
         $user = $request->user();
@@ -125,7 +146,16 @@ class AuthController extends Controller
         }
     }
 
-    // Logout User
+    #[OA\Post(
+        path: "/api/logout",
+        summary: "Logout user",
+        tags: ["Auth"],
+        security: [["sanctum" => []]],
+        responses: [
+            new OA\Response(response: 200, description: "OK"),
+            new OA\Response(response: 401, description: "Unauthenticated")
+        ]
+    )]
     public function logout(Request $request)
     {
         // Deletes only the current token used in this request

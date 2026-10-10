@@ -14,6 +14,13 @@ use OpenApi\Attributes as OA;
     url: "http://localhost:8000/",
     description: "API Server"
 )]
+#[OA\SecurityScheme(
+    securityScheme: "sanctum",
+    type: "http",
+    scheme: "bearer",
+    bearerFormat: "JWT",
+    description: "Enter your Bearer token in the format: Bearer <token>"
+)]
 abstract class Controller
 {
     //
