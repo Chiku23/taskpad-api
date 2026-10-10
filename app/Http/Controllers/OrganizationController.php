@@ -18,7 +18,9 @@ class OrganizationController extends Controller
             return response()->json([
                 "status" => "false",
                 "message" => "User has no organizations.",
-                "data" => []
+                "data" => [
+                    "organizations" => []
+                ]
             ]);
         }
 
@@ -69,7 +71,7 @@ class OrganizationController extends Controller
         // TODO: Add the user to the organization
 
         return response()->json([
-            "status"=>"success",
+            "status"=>"true",
             "message"=>"Organization created successfully."
         ]);
     }
