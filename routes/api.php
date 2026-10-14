@@ -20,4 +20,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Organization Routes
     Route::get('/organization', [OrganizationController::class, 'index']);
     Route::post('/organization/create', [OrganizationController::class, 'store']);
+    Route::get('/organization/{orgSlug}', [OrganizationController::class, 'getOrganization']);
+    Route::post('/organization/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
 });
