@@ -38,16 +38,14 @@ class OrganizationController extends Controller
     {
         // Get the details
         $user = $request->user();
-        $orgName = $request->name;
-        $orgSlug = $request->slug;
-        
-        // Validate the name and slug
-        if(empty($orgName) || empty($orgSlug)){
-            return response()->json([
-                'status' => 'false',
-                'message' => 'Please fill all the fields.'
-            ]);
-        }
+        // Validate the submitted data
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255'],
+        ]);
+
+        $orgName = $validated['name'];
+        $orgSlug = $validated['slug'];
 
         $organization = new Organization;
         // check if the slug is already taken
@@ -59,14 +57,29 @@ class OrganizationController extends Controller
                 "message"=>"Organization already exists."
             ]);
         }
+        try {
 
-        // create the organization
-        $org = $organization->create([
-            "name"=>$orgName,
-            "slug"=>$orgSlug,
-            "owner_id"=>$user->id,
-            "avatar_url"=>""
-        ]);
+            // create the organization
+            $org = $organization->create([
+                "name"=>$orgName,
+                "slug"=>$orgSlug,
+                "owner_id"=>$user->id,
+                "avatar_url"=>""
+            ]);
+        } catch (QueryException $e) {
+            // 1062 is the error code for duplicate entry in MySQL
+            if ($e->errorInfo[1] == 1062){
+                return response()->json([
+                    "status" => "false",
+                    "message" => "Organization already exists."
+                ]);
+            }
+            // For other DB related errors
+            return response()->json([
+                "status" => "false",
+                "message" => "Error creating organization."
+            ]);
+        }
 
         // TODO: Add the user to the organization
 
