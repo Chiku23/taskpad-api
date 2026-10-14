@@ -101,6 +101,13 @@ class OrganizationController extends Controller
         // Check if the organization exists
         $existingOrg = Organization::where("slug", $orgSlug)->first();
         
+        if(empty($existingOrg)){
+            return response()->json([
+                "status" => "false",
+                "message" => "Organization not found."
+            ]);
+        }
+
         // Return the organization details | Will add the condition to check if the user has access to the organization later 
         return response()->json([
             "status" => "true",
@@ -128,7 +135,7 @@ class OrganizationController extends Controller
                 "message" => "Organization not found."
             ]);
         }
-        
+
         $authenticatedUser = $request->user();
 
         // Check if the Organization belongs to the user
@@ -145,8 +152,20 @@ class OrganizationController extends Controller
             "slug"=>["sometimes", "string", "max:255"]
         ]);
 
+        // Check if the slug is already taken
+        $existingSlug = Organization::where("slug", $validated["slug"])->where("id", "!=", $existingOrg->id)->first();
+        if($existingSlug){
+            return response()->json([
+                "status" => "false",
+                "message" => "Slug already taken."
+            ]);
+        }
+
         // Update the organization details
-        $updatedOrg = Organization::where("slug", $orgSlug)->update($validated);
+        Organization::where("slug", $orgSlug)->update($validated);
+        
+        // Get the updated organization details
+        $updatedOrg = Organization::where("id", $existingOrg->id)->first();
         
         return response()->json([
             "status" => "true",
