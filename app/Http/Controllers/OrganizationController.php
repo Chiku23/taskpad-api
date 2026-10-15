@@ -175,4 +175,36 @@ class OrganizationController extends Controller
             ]
         ]);
     }
+
+    // Delete a organization
+    public function deleteOrganization(Request $request, $orgSlug){
+        // Get the authenticated user
+        $authenticatedUser = $request->user();
+        
+        // Check if the organization exist
+        $existingOrg = Organization::where("slug", $orgSlug)->first();
+        if(empty($existingOrg)){
+            return response()->json([
+                "status"=>"false",
+                "message"=>"Organization not found."
+            ]);
+        }
+
+        // Check if the Organization belongs to the user
+        if($existingOrg->owner_id !== $authenticatedUser->id){
+            return response()->json([
+                "status"=>"false",
+                "message"=>"User is not authorized to delete this organization."
+            ]);
+        }
+
+        // Delete the organization
+        // TODO: Implement Soft delete feature later
+        $existingOrg->delete();
+        
+        return response()->json([
+            "status"=>"true",
+            "message"=>"Organization deleted successfully."
+        ]);
+    }
 }
