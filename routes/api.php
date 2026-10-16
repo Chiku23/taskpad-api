@@ -23,5 +23,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/organization/{orgSlug}', [OrganizationController::class, 'getOrganization']);
     Route::post('/organization/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
     Route::delete('/organization/{orgSlug}', [OrganizationController::class, 'deleteOrganization']);
-    
+    Route::get('/organization/{orgSlug}/members', [OrganizationController::class, 'getOrganizationMembers']);
 });

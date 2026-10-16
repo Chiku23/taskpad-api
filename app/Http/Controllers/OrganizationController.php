@@ -66,7 +66,22 @@ class OrganizationController extends Controller
                 "owner_id"=>$user->id,
                 "avatar_url"=>""
             ]);
-        } catch (QueryException $e) {
+
+            // Add the user to the organization as an admin
+            $orgMember = new OrganizationMember;
+            $orgMember->create([
+                "organization_id"=>$org->id,
+                "user_id"=>$user->id,
+                "role"=>"owner",
+                "joined_at"=>now()
+            ]);
+
+            return response()->json([
+                "status"=>"true",
+                "message"=>"Organization created successfully."
+            ]);
+        } 
+        catch (QueryException $e) {
             // 1062 is the error code for duplicate entry in MySQL
             if ($e->errorInfo[1] == 1062){
                 return response()->json([
@@ -80,13 +95,6 @@ class OrganizationController extends Controller
                 "message" => "Error creating organization."
             ]);
         }
-
-        // TODO: Add the user to the organization
-
-        return response()->json([
-            "status"=>"true",
-            "message"=>"Organization created successfully."
-        ]);
     }
 
     // Get the Organization Details
@@ -205,6 +213,38 @@ class OrganizationController extends Controller
         return response()->json([
             "status"=>"true",
             "message"=>"Organization deleted successfully."
+        ]);
+    }
+
+    // Get the list of users in the organization
+    public function getOrganizationMembers(Request $request, $orgSlug)
+    {
+        // Check if the authenticated user is allowed to view the organization members
+        $authenticatedUser = $request->user();
+        $existingOrg = Organization::where("slug", $orgSlug)->first();
+        if(empty($existingOrg)){
+            return response()->json([
+                "status"=>"false",
+                "message"=>"Organization not found."
+            ]);
+        }
+
+        if($existingOrg->owner_id !== $authenticatedUser->id){
+            return response()->json([
+                "status"=>"false",
+                "message"=>"User is not authorized to view this organization."
+            ]);
+        }
+
+        // Get the organization members
+        $members = OrganizationMember::where("organization_id", $existingOrg->id)->get();
+        
+        return response()->json([
+            "status"=>"true",
+            "message"=>"Organization members found.",
+            "data"=>[
+                "members"=>$members
+            ]
         ]);
     }
 }
