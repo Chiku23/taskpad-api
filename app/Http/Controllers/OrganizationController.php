@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrganizationController extends Controller
 {
@@ -59,22 +60,25 @@ class OrganizationController extends Controller
         }
         try {
 
-            // create the organization
-            $org = $organization->create([
-                "name"=>$orgName,
-                "slug"=>$orgSlug,
-                "owner_id"=>$user->id,
-                "avatar_url"=>""
-            ]);
+            // Create the organization and owner membership atomically
+            $org = DB::transaction(function () use ($organization, $orgName, $orgSlug, $user) {
+                $org = $organization->create([
+                    "name"=>$orgName,
+                    "slug"=>$orgSlug,
+                    "owner_id"=>$user->id,
+                    "avatar_url"=>""
+                ]);
 
-            // Add the user to the organization as an admin
-            $orgMember = new OrganizationMember;
-            $orgMember->create([
-                "organization_id"=>$org->id,
-                "user_id"=>$user->id,
-                "role"=>"owner",
-                "joined_at"=>now()
-            ]);
+                $orgMember = new OrganizationMember;
+                $orgMember->create([
+                    "organization_id"=>$org->id,
+                    "user_id"=>$user->id,
+                    "role"=>"owner",
+                    "joined_at"=>now()
+                ]);
+
+                return $org;
+            });
 
             return response()->json([
                 "status"=>"true",
