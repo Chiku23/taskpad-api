@@ -27,7 +27,7 @@ Legend: ✅ Done | 🔲 Not Started
 | ✅     | `GET`    | `/api/organizations/{org}`                | Get organization details                   |
 | ✅     | `PUT`    | `/api/organizations/{org}`                | Update organization name/avatar            |
 | ✅     | `DELETE` | `/api/organizations/{org}`                | Delete organization (owner only)           |
-| 🔲     | `GET`    | `/api/organizations/{org}/members`        | List all members of the organization       |
+| ✅     | `GET`    | `/api/organizations/{org}/members`        | List all members of the organization       |
 | 🔲     | `POST`   | `/api/organizations/{org}/members`        | Invite a user to the organization          |
 | 🔲     | `PUT`    | `/api/organizations/{org}/members/{user}` | Update a member's role                     |
 | 🔲     | `DELETE` | `/api/organizations/{org}/members/{user}` | Remove a member from the organization      |
