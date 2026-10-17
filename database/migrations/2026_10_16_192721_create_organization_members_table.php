@@ -21,7 +21,7 @@ return new class extends Migration
             $table->unique(['organization_id', 'user_id']);
             $table->foreign('organization_id')->references('id')->on('organizations')->cascadeOnDelete();
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
-
+            
             $table->timestamps();
         });
     }
