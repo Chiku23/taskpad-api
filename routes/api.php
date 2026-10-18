@@ -24,4 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/organization/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
     Route::delete('/organization/{orgSlug}', [OrganizationController::class, 'deleteOrganization']);
     Route::get('/organization/{orgSlug}/members', [OrganizationController::class, 'getOrganizationMembers']);
+    Route::post('/organization/{orgSlug}/members', [OrganizationController::class, 'addOrganizationMember']);
+    Route::put('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'updateOrganizationMember']);
+    Route::delete('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'removeOrganizationMember']);
 });

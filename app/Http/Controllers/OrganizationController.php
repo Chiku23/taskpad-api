@@ -355,6 +355,37 @@ class OrganizationController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/api/organization/{orgSlug}/members',
+        summary: 'Add a member to an organization',
+        tags: ['Organization'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'orgSlug', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: [
+                new OA\MediaType(
+                    mediaType: 'application/json',
+                    schema: new OA\Schema(
+                        required: ['email', 'role'],
+                        properties: [
+                            new OA\Property(property: 'email', type: 'string', format: 'email'),
+                            new OA\Property(property: 'role', type: 'string', enum: ['member', 'admin']),
+                        ]
+                    )
+                )
+            ]
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'OK'),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Organization or user not found'),
+        ]
+    )]
     // Add a member to a Organization (member or a admin)
     // Todo: Instead of directly adding we can make it a invite - For later
     public function addOrganizationMember(Request $request, $orgSlug)
@@ -417,6 +448,134 @@ class OrganizationController extends Controller
         return response()->json([
             'status' => 'true',
             'message' => 'User added to the organization successfully.',
+        ]);
+    }
+
+    #[OA\Post(
+        path: '/api/organization/{orgSlug}/members/{user}',
+        summary: 'Update the role of a member in an organization',
+        tags: ['Organization'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'orgSlug', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: [
+                new OA\MediaType(
+                    mediaType: 'application/json',
+                    schema: new OA\Schema(
+                        required: ['role'],
+                        properties: [
+                            new OA\Property(property: 'role', type: 'string', enum: ['member', 'admin']),
+                        ]
+                    )
+                )
+            ]
+        ),
+        responses: [
+            new OA\Response(response: 200, description: 'OK'),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Organization or user not found'),
+        ]
+    )]
+    // Update the user role of a member in the organization
+    public function updateOrganizationMember(Request $request, $orgSlug, $memberId)
+    {
+        // validate 
+        $request->validate([
+            'role' => ['nullable', 'string', 'in:member,admin'],
+        ]);
+
+        // Check if the authenticated user is allowed to update the role of the user
+        $authenticatedUser = $request->user();
+        $existingOrg = Organization::where('slug', $orgSlug)->first();
+        if (empty($existingOrg)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Organization not found.',
+            ]);
+        }
+        if ($existingOrg->owner_id !== $authenticatedUser->id) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'User is not authorized to update the role of the user.',
+            ]);
+        }
+
+        // Check if the member exists
+        $existingMember = OrganizationMember::where('organization_id', $existingOrg->id)->where('user_id', $memberId)->first();
+        if (empty($existingMember)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Member not found.',
+            ]);
+        }
+
+        // Update the role
+        $existingMember->role = $request->role;
+        $existingMember->save();
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Member role updated successfully.',
+        ]);
+    }
+
+    #[OA\Delete(
+        path: '/api/organization/{orgSlug}/members/{user}',
+        summary: 'Remove a member from an organization',
+        tags: ['Organization'],
+        security: [['sanctum' => []]],
+        parameters: [
+            new OA\Parameter(name: 'orgSlug', in: 'path', required: true, schema: new OA\Schema(type: 'string')),
+            new OA\Parameter(name: 'user', in: 'path', required: true, schema: new OA\Schema(type: 'integer')),
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'OK'),
+            new OA\Response(response: 400, description: 'Bad Request'),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Organization or user not found'),
+        ]
+    )]
+    // Remove the user from the organization
+    public function removeOrganizationMember(Request $request, $orgSlug, $memberId)
+    {
+        // Check if the authenticated user is allowed to remove the user
+        $authenticatedUser = $request->user();
+        $existingOrg = Organization::where('slug', $orgSlug)->first();
+        if (empty($existingOrg)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Organization not found.',
+            ]);
+        }
+        if ($existingOrg->owner_id !== $authenticatedUser->id) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'User is not authorized to remove the user.',
+            ]);
+        }
+
+        // Check if the member exists
+        $existingMember = OrganizationMember::where('organization_id', $existingOrg->id)->where('user_id', $memberId)->first();
+        if (empty($existingMember)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Member not found.',
+            ]);
+        }
+
+        // Remove the user
+        $existingMember->delete();
+
+        return response()->json([
+            'status' => 'true',
+            'message' => 'Member removed successfully.',
         ]);
     }
 }
