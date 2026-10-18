@@ -356,7 +356,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    #[OA\Put(
+    #[OA\Post(
         path: '/api/organization/{orgSlug}/members',
         summary: 'Add a member to an organization',
         tags: ['Organization'],
@@ -452,7 +452,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    #[OA\Post(
+    #[OA\Put(
         path: '/api/organization/{orgSlug}/members/{user}',
         summary: 'Update the role of a member in an organization',
         tags: ['Organization'],
