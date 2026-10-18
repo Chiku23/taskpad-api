@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Organization;
 use App\Models\OrganizationMember;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use OpenApi\Attributes as OA;
@@ -355,7 +356,7 @@ class OrganizationController extends Controller
         ]);
     }
 
-    #[OA\Post(
+    #[OA\Put(
         path: '/api/organization/{orgSlug}/members',
         summary: 'Add a member to an organization',
         tags: ['Organization'],
@@ -487,7 +488,7 @@ class OrganizationController extends Controller
     {
         // validate 
         $request->validate([
-            'role' => ['nullable', 'string', 'in:member,admin'],
+            'role' => ['required', 'string', 'in:member,admin'],
         ]);
 
         // Check if the authenticated user is allowed to update the role of the user
@@ -513,6 +514,14 @@ class OrganizationController extends Controller
                 'status' => 'false',
                 'message' => 'Member not found.',
             ]);
+        }
+
+        // Prevent modifications to the organization owner's membership
+        if ((int) $memberId === $existingOrg->owner_id) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Cannot modify the organization owner\'s membership. Use the ownership transfer flow instead.',
+            ], 403);
         }
 
         // Update the role
@@ -568,6 +577,14 @@ class OrganizationController extends Controller
                 'status' => 'false',
                 'message' => 'Member not found.',
             ]);
+        }
+
+        // Prevent removal of the organization owner
+        if ((int) $memberId === $existingOrg->owner_id) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'Cannot remove the organization owner. Use the ownership transfer flow instead.',
+            ], 403);
         }
 
         // Remove the user
