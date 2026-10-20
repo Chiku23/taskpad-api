@@ -38,15 +38,15 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                                 | Description                          |
 | ------ | -------- | ---------------------------------------- | ------------------------------------ |
-| 🔲     | `GET`    | `/api/organizations/{org}/projects`      | List all projects in an organization |
-| 🔲     | `POST`   | `/api/organizations/{org}/projects`      | Create a new project                 |
-| 🔲     | `GET`    | `/api/projects/{project}`                | Get project details                  |
-| 🔲     | `PUT`    | `/api/projects/{project}`                | Update project name, key, lead       |
-| 🔲     | `DELETE` | `/api/projects/{project}`                | Archive or delete a project          |
-| 🔲     | `GET`    | `/api/projects/{project}/members`        | List project members                 |
-| 🔲     | `POST`   | `/api/projects/{project}/members`        | Add a member to a project            |
-| 🔲     | `PUT`    | `/api/projects/{project}/members/{user}` | Update member's project role         |
-| 🔲     | `DELETE` | `/api/projects/{project}/members/{user}` | Remove member from project           |
+| ✅     | `GET`    | `/api/organizations/{org}/projects`      | List all projects in an organization |
+| ✅     | `POST`   | `/api/organizations/{org}/projects`      | Create a new project                 |
+| ✅     | `GET`    | `/api/projects/{project}`                | Get project details                  |
+| ✅     | `PUT`    | `/api/projects/{project}`                | Update project name, key, lead       |
+| ✅     | `DELETE` | `/api/projects/{project}`                | Archive or delete a project          |
+| ✅     | `GET`    | `/api/projects/{project}/members`        | List project members                 |
+| ✅     | `POST`   | `/api/projects/{project}/members`        | Add a member to a project            |
+| ✅     | `PUT`    | `/api/projects/{project}/members/{user}` | Update member's project role         |
+| ✅     | `DELETE` | `/api/projects/{project}/members/{user}` | Remove member from project           |
 
 ---
 
