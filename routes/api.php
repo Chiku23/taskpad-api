@@ -32,5 +32,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Project Routes
     Route::get('/organization/{orgSlug}/projects', [ProjectController::class, 'getOrganizationProjects']);
     Route::post('/organization/{orgSlug}/projects', [ProjectController::class, 'createOrganizationProject']);
+    Route::get('/project/{projectSlug}', [ProjectController::class, 'getProject']);
+    Route::put('/project/{projectSlug}', [ProjectController::class, 'updateProject']);
+    Route::delete('/project/{projectSlug}', [ProjectController::class, 'deleteProject']);
+    Route::get('/project/{projectSlug}/members', [ProjectController::class, 'getProjectMembers']);
+    Route::post('/project/{projectSlug}/members', [ProjectController::class, 'addProjectMember']);
+    Route::put('/project/{projectSlug}/members/{user}', [ProjectController::class, 'updateProjectMember']);
+    Route::delete('/project/{projectSlug}/members/{user}', [ProjectController::class, 'removeProjectMember']);
     
 });
