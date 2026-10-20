@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HealthController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\ProjectController;
 
 // Health Check
 Route::get('/health', [HealthController::class, 'index']);    
@@ -27,4 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/organization/{orgSlug}/members', [OrganizationController::class, 'addOrganizationMember']);
     Route::put('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'updateOrganizationMember']);
     Route::delete('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'removeOrganizationMember']);
+
+    // Project Routes
+    Route::get('/organization/{orgSlug}/projects', [ProjectController::class, 'getOrganizationProjects']);
+    Route::post('/organization/{orgSlug}/projects', [ProjectController::class, 'createOrganizationProject']);
+    
 });
