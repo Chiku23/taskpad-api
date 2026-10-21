@@ -54,14 +54,14 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                         | Description                                                        |
 | ------ | -------- | -------------------------------- | ------------------------------------------------------------------ |
-| 🔲     | `GET`    | `/api/projects/{project}/issues` | List all issues (supports filters: status, type, assignee, sprint) |
-| 🔲     | `POST`   | `/api/projects/{project}/issues` | Create a new issue                                                 |
-| 🔲     | `GET`    | `/api/issues/{issue}`            | Get full issue detail                                              |
-| 🔲     | `PUT`    | `/api/issues/{issue}`            | Update issue fields                                                |
-| 🔲     | `DELETE` | `/api/issues/{issue}`            | Delete an issue                                                    |
-| 🔲     | `PATCH`  | `/api/issues/{issue}/status`     | Move issue to a new status/column                                  |
-| 🔲     | `PATCH`  | `/api/issues/{issue}/assignees`  | Set/update assignees                                               |
-| 🔲     | `PATCH`  | `/api/issues/{issue}/sprint`     | Move issue to a sprint or back to backlog                          |
+| ✅     | `GET`    | `/api/projects/{project}/issues` | List all issues (supports filters: status, type, assignee, sprint) |
+| ✅     | `POST`   | `/api/projects/{project}/issues` | Create a new issue                                                 |
+| ✅     | `GET`    | `/api/issues/{issue}`            | Get full issue detail                                              |
+| ✅     | `PUT`    | `/api/issues/{issue}`            | Update issue fields                                                |
+| ✅     | `DELETE` | `/api/issues/{issue}`            | Delete an issue                                                    |
+| ✅     | `PATCH`  | `/api/issues/{issue}/status`     | Move issue to a new status/column                                  |
+| ✅     | `PATCH`  | `/api/issues/{issue}/assignees`  | Set/update assignees                                               |
+| ✅     | `PATCH`  | `/api/issues/{issue}/sprint`     | Move issue to a sprint or back to backlog                          |
 
 ### Issue Filters (query params on `GET /issues`)
 
@@ -81,11 +81,11 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                                | Description                           |
 | ------ | -------- | --------------------------------------- | ------------------------------------- |
-| 🔲     | `GET`    | `/api/projects/{project}/board`         | Get the board with columns and issues |
-| 🔲     | `PUT`    | `/api/projects/{project}/board/columns` | Reorder board columns                 |
-| 🔲     | `POST`   | `/api/projects/{project}/board/columns` | Add a custom column                   |
-| 🔲     | `PUT`    | `/api/board-columns/{column}`           | Rename a column                       |
-| 🔲     | `DELETE` | `/api/board-columns/{column}`           | Remove a custom column                |
+| ✅     | `GET`    | `/api/projects/{project}/board`         | Get the board with columns and issues |
+| ✅     | `PUT`    | `/api/projects/{project}/board/columns` | Reorder board columns                 |
+| ✅     | `POST`   | `/api/projects/{project}/board/columns` | Add a custom column                   |
+| ✅     | `PUT`    | `/api/board-columns/{column}`           | Rename a column                       |
+| ✅     | `DELETE` | `/api/board-columns/{column}`           | Remove a custom column                |
 
 ---
 
@@ -93,13 +93,13 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                          | Description                                                 |
 | ------ | -------- | --------------------------------- | ----------------------------------------------------------- |
-| 🔲     | `GET`    | `/api/projects/{project}/sprints` | List all sprints for a project                              |
-| 🔲     | `POST`   | `/api/projects/{project}/sprints` | Create a new sprint                                         |
-| 🔲     | `GET`    | `/api/sprints/{sprint}`           | Get sprint details and issues                               |
-| 🔲     | `PUT`    | `/api/sprints/{sprint}`           | Update sprint name, goal, dates                             |
-| 🔲     | `POST`   | `/api/sprints/{sprint}/start`     | Activate a planned sprint                                   |
-| 🔲     | `POST`   | `/api/sprints/{sprint}/complete`  | Mark sprint as completed, move unfinished issues to backlog |
-| 🔲     | `DELETE` | `/api/sprints/{sprint}`           | Delete a sprint (planned only)                              |
+| ✅     | `GET`    | `/api/projects/{project}/sprints` | List all sprints for a project                              |
+| ✅     | `POST`   | `/api/projects/{project}/sprints` | Create a new sprint                                         |
+| ✅     | `GET`    | `/api/sprints/{sprint}`           | Get sprint details and issues                               |
+| ✅     | `PUT`    | `/api/sprints/{sprint}`           | Update sprint name, goal, dates                             |
+| ✅     | `POST`   | `/api/sprints/{sprint}/start`     | Activate a planned sprint                                   |
+| ✅     | `POST`   | `/api/sprints/{sprint}/complete`  | Mark sprint as completed, move unfinished issues to backlog |
+| ✅     | `DELETE` | `/api/sprints/{sprint}`           | Delete a sprint (planned only)                              |
 
 ---
 
@@ -107,10 +107,10 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                       | Description                        |
 | ------ | -------- | ------------------------------ | ---------------------------------- |
-| 🔲     | `GET`    | `/api/issues/{issue}/comments` | List comments on an issue          |
-| 🔲     | `POST`   | `/api/issues/{issue}/comments` | Add a comment                      |
-| 🔲     | `PUT`    | `/api/comments/{comment}`      | Edit a comment (own comments only) |
-| 🔲     | `DELETE` | `/api/comments/{comment}`      | Delete a comment (own or admin)    |
+| ✅     | `GET`    | `/api/issues/{issue}/comments` | List comments on an issue          |
+| ✅     | `POST`   | `/api/issues/{issue}/comments` | Add a comment                      |
+| ✅     | `PUT`    | `/api/comments/{comment}`      | Edit a comment (own comments only) |
+| ✅     | `DELETE` | `/api/comments/{comment}`      | Delete a comment (own or admin)    |
 
 ---
 
@@ -118,10 +118,10 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                         | Description                  |
 | ------ | -------- | -------------------------------- | ---------------------------- |
-| 🔲     | `GET`    | `/api/projects/{project}/labels` | List all labels in a project |
-| 🔲     | `POST`   | `/api/projects/{project}/labels` | Create a label               |
-| 🔲     | `PUT`    | `/api/labels/{label}`            | Update label name or color   |
-| 🔲     | `DELETE` | `/api/labels/{label}`            | Delete a label               |
+| ✅     | `GET`    | `/api/projects/{project}/labels` | List all labels in a project |
+| ✅     | `POST`   | `/api/projects/{project}/labels` | Create a label               |
+| ✅     | `PUT`    | `/api/labels/{label}`            | Update label name or color   |
+| ✅     | `DELETE` | `/api/labels/{label}`            | Delete a label               |
 
 ---
 
@@ -129,9 +129,9 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method   | Endpoint                          | Description                             |
 | ------ | -------- | --------------------------------- | --------------------------------------- |
-| 🔲     | `POST`   | `/api/issues/{issue}/attachments` | Upload a file to an issue               |
-| 🔲     | `GET`    | `/api/attachments/{attachment}`   | Download or get a signed URL for a file |
-| 🔲     | `DELETE` | `/api/attachments/{attachment}`   | Delete an attachment                    |
+| ✅     | `POST`   | `/api/issues/{issue}/attachments` | Upload a file to an issue               |
+| ✅     | `GET`    | `/api/attachments/{attachment}`   | Download or get a signed URL for a file |
+| ✅     | `DELETE` | `/api/attachments/{attachment}`   | Delete an attachment                    |
 
 ---
 
@@ -139,8 +139,8 @@ Legend: ✅ Done | 🔲 Not Started
 
 | Status | Method | Endpoint                           | Description                            |
 | ------ | ------ | ---------------------------------- | -------------------------------------- |
-| 🔲     | `GET`  | `/api/issues/{issue}/activity`     | Get the activity timeline for an issue |
-| 🔲     | `GET`  | `/api/projects/{project}/activity` | Get recent activity across a project   |
+| ✅     | `GET`  | `/api/issues/{issue}/activity`     | Get the activity timeline for an issue |
+| ✅     | `GET`  | `/api/projects/{project}/activity` | Get recent activity across a project   |
 
 ---
 
