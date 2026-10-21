@@ -48,16 +48,27 @@ class AuthController extends Controller
 
         // Generate the token
         $token = $existingUser->createToken("taskpad")->plainTextToken;
+
+        $cookie = cookie(
+            'taskpad_token',
+            $token,
+            60 * 24 * 7,
+            '/',
+            null,
+            config('app.env') === 'production',
+            true,
+            false,
+            'Lax'
+        );
         
         return response()->json([
             "status"=>"true",
             "message"=>"User found.",
             "data"=>[
-                "token"=> $token,
                 "name"=> $existingUser->name,
                 "email"=> $existingUser->email
             ]
-        ]);
+        ])->withCookie($cookie);
     }
 
     #[OA\Post(
@@ -159,11 +170,16 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         // Deletes only the current token used in this request
-        $request->user()->currentAccessToken()->delete();
+        if ($request->user() && $request->user()->currentAccessToken()) {
+            $request->user()->currentAccessToken()->delete();
+        }
+
+        $cookie = cookie()->forget('taskpad_token', '/');
+
         return response()->json([
             "status" => "true",
             "message" => "Logged out."
-        ]);
+        ])->withCookie($cookie);
     }
 
 }

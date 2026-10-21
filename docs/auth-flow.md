@@ -58,8 +58,8 @@ Client                          API
   │  ◄──────────────────────── │
   │  200 { status: "true",       │
   │    message: "Login success.",│
-  │    token: "2|xyz789...",     │
-  │    user: { id, name, email } }
+  │    data: { name, email } }   │
+  │  Set-Cookie: taskpad_token=..│
   │                              │
 ```
 
@@ -119,11 +119,12 @@ Client                          API
 
 ---
 
-## Token Storage (Client-Side)
+## Token Storage & Transmission
 
-The frontend should store the token in `localStorage` or a secure HTTP-only cookie.
+TaskPad secures authentication by issuing the Sanctum token inside an `HttpOnly`, `SameSite=Lax` cookie (`taskpad_token`) alongside the JSON response.
 
-> **Recommendation**: Use `localStorage` for simplicity during development. For production, prefer HTTP-only cookies to prevent XSS token theft.
+- **Web / SPA (React)**: Requests include `withCredentials: true`. The browser automatically stores and transmits the `HttpOnly` cookie. JavaScript has no access to the cookie, mitigating XSS token theft.
+- **Mobile / Third-Party**: Can continue to send the token in the `Authorization: Bearer <token>` header.
 
 ---
 
@@ -139,14 +140,17 @@ The frontend should store the token in `localStorage` or a secure HTTP-only cook
 
 ```php
 // On successful login
-$token = $user->createToken('auth_token')->plainTextToken;
+$token = $user->createToken('taskpad')->plainTextToken;
+$cookie = cookie('taskpad_token', $token, 60 * 24 * 7, '/', null, config('app.env') === 'production', true, false, 'Lax');
 
 return response()->json([
     'status' => 'true',
     'message' => 'Login success.',
-    'token' => $token,
-    'user' => new UserResource($user),
-]);
+    'data' => [
+        'name' => $user->name,
+        'email' => $user->email,
+    ],
+])->withCookie($cookie);
 ```
 
 ### Password Verification Example
