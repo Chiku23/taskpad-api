@@ -346,7 +346,15 @@ class OrganizationController extends Controller
 
         // Get the organization members
         $members = OrganizationMember::where('organization_id', $existingOrg->id)->get();
-
+        
+        // Fetch user details along with members data
+        $members->each(function ($member) {
+            $user = User::find($member->user_id);
+            $member->user_id = $user->id;
+            $member->user_name = $user->name;
+            $member->user_email = $user->email;
+        });
+        
         return response()->json([
             'status' => 'true',
             'message' => 'Organization members found.',

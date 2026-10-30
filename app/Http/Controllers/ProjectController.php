@@ -119,8 +119,25 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'key' => 'required|string|max:255',
-            'lead' => 'nullable|integer',
+            'lead' => 'required|integer',
         ]);
+
+        // Check if the user is part of the organization and the id is valid
+        $lead = User::find($validatedData['lead']);
+        if (empty($lead)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'User not found.',
+            ]);
+        }
+
+        $leadOrganizationMember = OrganizationMember::where('organization_id', $organization->id)->where('user_id', $lead->id)->first();
+        if (empty($leadOrganizationMember)) {
+            return response()->json([
+                'status' => 'false',
+                'message' => 'User is not part of the organization.',
+            ]);
+        }
 
         // Create the project
         $project = Project::create([
