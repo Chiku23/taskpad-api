@@ -148,13 +148,12 @@ class ProjectController extends Controller
             'lead_id' => $validatedData['lead'] ?? null,
         ]);
 
-        // Add the project lead as a member of the project if lead is not null
+        // Add the project lead as owner of the project if lead is not null
         if (!empty($validatedData['lead'])) {
             ProjectMember::create([
-                'organization_id' => $organization->id,
                 'project_id' => $project->id,
                 'user_id' => $validatedData['lead'],
-                'role' => 'lead',
+                'role' => 'owner',
             ]);
         }
 
@@ -259,10 +258,13 @@ class ProjectController extends Controller
         $user = $request->user();
         $projectMember = ProjectMember::where('project_id', $project->id)->where('user_id', $user->id)->first();
 
-        if (empty($projectMember)) {
+        // Exception for Organization Admin/Owner to update project
+        $organizationMember = OrganizationMember::where('organization_id', $project->organization_id)->where('user_id', $user->id)->whereIn('role', ['admin', 'owner'])->first();
+
+        if (empty($projectMember) && empty($organizationMember)) {
             return response()->json([
                 'status' => 'false',
-                'message' => 'User does not have access to this project.',
+                'message' => 'User does not have access to update this project.',
             ]);
         }
 
@@ -288,14 +290,13 @@ class ProjectController extends Controller
         // Update the project
         $project->update($updateData);
 
-        // Update the project lead as a member of the project if lead is not null
+        // Update the project lead as owner of the project if lead is not null
         if (!empty($validatedData['lead'])) {
             ProjectMember::where('project_id', $project->id)->where('user_id', $project->lead_id)->delete();
             ProjectMember::create([
-                'organization_id' => $project->organization_id,
                 'project_id' => $project->id,
                 'user_id' => $validatedData['lead'],
-                'role' => 'lead',
+                'role' => 'owner',
             ]);
         }
 
