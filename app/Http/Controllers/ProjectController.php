@@ -8,6 +8,7 @@ use App\Models\Organization;
 use App\Models\OrganizationMember;
 use App\Models\Project;
 use App\Models\ProjectMember;
+use App\Models\User;
 use OpenApi\Attributes as OA;
 
 class ProjectController extends Controller
