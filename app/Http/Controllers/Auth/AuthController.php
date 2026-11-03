@@ -65,6 +65,7 @@ class AuthController extends Controller
             "status"=>"true",
             "message"=>"User found.",
             "data"=>[
+                "id"=> $existingUser->id,
                 "name"=> $existingUser->name,
                 "email"=> $existingUser->email
             ]
@@ -148,6 +149,7 @@ class AuthController extends Controller
                 "status"=>"true", 
                 "message"=>"User found.", 
                 "data"=>[
+                    "id"=> $user->id,
                     "name"=> $user->name,
                     "email"=> $user->email
                 ]

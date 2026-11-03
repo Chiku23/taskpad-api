@@ -12,4 +12,29 @@ class ProjectMember extends Model
         'role',
         'joined_at',
     ];
+
+    protected $appends = [
+        'user_name',
+        'user_email',
+    ];
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getUserNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
+
+    public function getUserEmailAttribute(): ?string
+    {
+        return $this->user?->email;
+    }
 }

@@ -13,6 +13,11 @@ class OrganizationMember extends Model
         'joined_at'
     ];
 
+    protected $appends = [
+        'user_name',
+        'user_email',
+    ];
+
     public function organization()
     {
         return $this->belongsTo(Organization::class);
@@ -21,5 +26,15 @@ class OrganizationMember extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getUserNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
+
+    public function getUserEmailAttribute(): ?string
+    {
+        return $this->user?->email;
     }
 }
