@@ -20,33 +20,37 @@ Legend: ✅ Done | 🔲 Not Started
 
 ## Organizations
 
-| Status | Method   | Endpoint                                  | Description                                |
-| ------ | -------- | ----------------------------------------- | ------------------------------------------ |
-| ✅     | `GET`    | `/api/organizations`                      | List all organizations the user belongs to |
-| ✅     | `POST`   | `/api/organizations`                      | Create a new organization                  |
-| ✅     | `GET`    | `/api/organizations/{org}`                | Get organization details                   |
-| ✅     | `PUT`    | `/api/organizations/{org}`                | Update organization name/avatar            |
-| ✅     | `DELETE` | `/api/organizations/{org}`                | Delete organization (owner only)           |
-| ✅     | `GET`    | `/api/organizations/{org}/members`        | List all members of the organization       |
-| ✅     | `POST`   | `/api/organizations/{org}/members`        | Invite a user to the organization          |
-| ✅     | `PUT`    | `/api/organizations/{org}/members/{user}` | Update a member's role                     |
-| ✅     | `DELETE` | `/api/organizations/{org}/members/{user}` | Remove a member from the organization      |
+All organization routes support both `/api/organization` (singular) and `/api/organizations` (plural).
+
+| Status | Method   | Endpoint                                  | Access Level       | Description                                                            |
+| ------ | -------- | ----------------------------------------- | ------------------ | ---------------------------------------------------------------------- |
+| ✅     | `GET`    | `/api/organization`                      | Authenticated User | List all organizations the user belongs to (with role, counts, owner)  |
+| ✅     | `POST`   | `/api/organization/create`                | Authenticated User | Create a new organization and assign creator as `owner`                |
+| ✅     | `GET`    | `/api/organization/{orgSlug}`             | Member / Admin / Owner | Get organization details (with `user_role`, counts, owner)        |
+| ✅     | `POST` / `PUT` | `/api/organization/{orgSlug}`       | Admin / Owner      | Update organization name or slug                                       |
+| ✅     | `DELETE` | `/api/organization/{orgSlug}`             | Owner only         | Delete organization and all associated data                            |
+| ✅     | `GET`    | `/api/organization/{orgSlug}/members`     | Member / Admin / Owner | List all members with user details (id, name, email)              |
+| ✅     | `POST`   | `/api/organization/{orgSlug}/members`     | Admin / Owner      | Add a member by email (`admin` or `member` role)                      |
+| ✅     | `PUT`    | `/api/organization/{orgSlug}/members/{user}` | Admin / Owner   | Update a member's role (owner cannot be altered; admin cannot alter admin) |
+| ✅     | `DELETE` | `/api/organization/{orgSlug}/members/{user}` | Admin / Owner   | Remove a member (owner cannot be removed; admin cannot remove admin)  |
 
 ---
 
 ## Projects
 
-| Status | Method   | Endpoint                                 | Description                          |
-| ------ | -------- | ---------------------------------------- | ------------------------------------ |
-| ✅     | `GET`    | `/api/organizations/{org}/projects`      | List all projects in an organization |
-| ✅     | `POST`   | `/api/organizations/{org}/projects`      | Create a new project                 |
-| ✅     | `GET`    | `/api/projects/{project}`                | Get project details                  |
-| ✅     | `PUT`    | `/api/projects/{project}`                | Update project name, key, lead       |
-| ✅     | `DELETE` | `/api/projects/{project}`                | Archive or delete a project          |
-| ✅     | `GET`    | `/api/projects/{project}/members`        | List project members                 |
-| ✅     | `POST`   | `/api/projects/{project}/members`        | Add a member to a project            |
-| ✅     | `PUT`    | `/api/projects/{project}/members/{user}` | Update member's project role         |
-| ✅     | `DELETE` | `/api/projects/{project}/members/{user}` | Remove member from project           |
+All project routes support both `/api/project` (singular) and `/api/projects` (plural).
+
+| Status | Method   | Endpoint                                 | Access Level                | Description                                                       |
+| ------ | -------- | ---------------------------------------- | --------------------------- | ----------------------------------------------------------------- |
+| ✅     | `GET`    | `/api/organization/{orgSlug}/projects`   | Org Member / Admin / Owner  | List all projects in org (with lead info, members count, user role) |
+| ✅     | `POST`   | `/api/organization/{orgSlug}/projects`   | Org Member / Admin / Owner  | Create project in org (assigns lead as project owner)             |
+| ✅     | `GET`    | `/api/project/{projectSlug}`             | Project Member / Org Admin / Org Owner | Get project details (with lead, org, members count, user role) |
+| ✅     | `PUT`    | `/api/project/{projectSlug}`             | Project Admin / Owner OR Org Admin / Owner | Update project name, key, description, lead, archive status |
+| ✅     | `DELETE` | `/api/project/{projectSlug}`             | Project Admin / Owner OR Org Admin / Owner | Delete a project                                                  |
+| ✅     | `GET`    | `/api/project/{projectSlug}/members`     | Project Member / Org Admin / Org Owner | List project members with user info (id, name, email)            |
+| ✅     | `POST`   | `/api/project/{projectSlug}/members`     | Project Admin / Owner OR Org Admin / Owner | Add project member (user must be org member first)                |
+| ✅     | `PUT`    | `/api/project/{projectSlug}/members/{user}` | Project Admin / Owner OR Org Admin / Owner | Update member's project role (`admin` or `member`)             |
+| ✅     | `DELETE` | `/api/project/{projectSlug}/members/{user}` | Project Admin / Owner OR Org Admin / Owner | Remove member from project (owner cannot be removed)              |
 
 ---
 

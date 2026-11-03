@@ -27,25 +27,44 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Organization Routes
     Route::get('/organization', [OrganizationController::class, 'index']);
+    Route::get('/organizations', [OrganizationController::class, 'index']);
     Route::post('/organization/create', [OrganizationController::class, 'store']);
+    Route::post('/organizations', [OrganizationController::class, 'store']);
     Route::get('/organization/{orgSlug}', [OrganizationController::class, 'getOrganization']);
+    Route::get('/organizations/{orgSlug}', [OrganizationController::class, 'getOrganization']);
     Route::post('/organization/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
+    Route::put('/organization/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
+    Route::put('/organizations/{orgSlug}', [OrganizationController::class, 'updateOrganization']);
     Route::delete('/organization/{orgSlug}', [OrganizationController::class, 'deleteOrganization']);
+    Route::delete('/organizations/{orgSlug}', [OrganizationController::class, 'deleteOrganization']);
     Route::get('/organization/{orgSlug}/members', [OrganizationController::class, 'getOrganizationMembers']);
+    Route::get('/organizations/{orgSlug}/members', [OrganizationController::class, 'getOrganizationMembers']);
     Route::post('/organization/{orgSlug}/members', [OrganizationController::class, 'addOrganizationMember']);
+    Route::post('/organizations/{orgSlug}/members', [OrganizationController::class, 'addOrganizationMember']);
     Route::put('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'updateOrganizationMember']);
+    Route::put('/organizations/{orgSlug}/members/{user}', [OrganizationController::class, 'updateOrganizationMember']);
     Route::delete('/organization/{orgSlug}/members/{user}', [OrganizationController::class, 'removeOrganizationMember']);
+    Route::delete('/organizations/{orgSlug}/members/{user}', [OrganizationController::class, 'removeOrganizationMember']);
 
     // Project Routes
     Route::get('/organization/{orgSlug}/projects', [ProjectController::class, 'getOrganizationProjects']);
+    Route::get('/organizations/{orgSlug}/projects', [ProjectController::class, 'getOrganizationProjects']);
     Route::post('/organization/{orgSlug}/projects', [ProjectController::class, 'createOrganizationProject']);
+    Route::post('/organizations/{orgSlug}/projects', [ProjectController::class, 'createOrganizationProject']);
     Route::get('/project/{projectSlug}', [ProjectController::class, 'getProject']);
+    Route::get('/projects/{projectSlug}', [ProjectController::class, 'getProject']);
     Route::put('/project/{projectSlug}', [ProjectController::class, 'updateProject']);
+    Route::put('/projects/{projectSlug}', [ProjectController::class, 'updateProject']);
     Route::delete('/project/{projectSlug}', [ProjectController::class, 'deleteProject']);
+    Route::delete('/projects/{projectSlug}', [ProjectController::class, 'deleteProject']);
     Route::get('/project/{projectSlug}/members', [ProjectController::class, 'getProjectMembers']);
+    Route::get('/projects/{projectSlug}/members', [ProjectController::class, 'getProjectMembers']);
     Route::post('/project/{projectSlug}/members', [ProjectController::class, 'addProjectMember']);
+    Route::post('/projects/{projectSlug}/members', [ProjectController::class, 'addProjectMember']);
     Route::put('/project/{projectSlug}/members/{user}', [ProjectController::class, 'updateProjectMember']);
+    Route::put('/projects/{projectSlug}/members/{user}', [ProjectController::class, 'updateProjectMember']);
     Route::delete('/project/{projectSlug}/members/{user}', [ProjectController::class, 'removeProjectMember']);
+    Route::delete('/projects/{projectSlug}/members/{user}', [ProjectController::class, 'removeProjectMember']);
 
     // Issue Routes
     Route::get('/project/{projectSlug}/issues', [IssueController::class, 'getProjectIssues']);

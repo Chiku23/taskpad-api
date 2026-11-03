@@ -1548,11 +1548,81 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "List organizations owned by the authenticated user",
+                "summary": "List all organizations the authenticated user belongs to",
                 "operationId": "d7e9f6249d9c3e47bfbe93d7443024d5",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Organizations retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "organizations": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "avatar_url": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "user_role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "owner",
+                                                                    "admin",
+                                                                    "member"
+                                                                ]
+                                                            },
+                                                            "members_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "projects_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "owner": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -1584,12 +1654,10 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Acme Corp",
                                         "maxLength": 255
                                     },
                                     "slug": {
                                         "type": "string",
-                                        "example": "acme-corp",
                                         "maxLength": 255
                                     }
                                 },
@@ -1599,11 +1667,38 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Organization created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "organization": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    },
+                    "409": {
+                        "description": "Organization slug already taken"
                     },
                     "422": {
                         "description": "Validation error"
@@ -1621,7 +1716,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Get organization details by slug",
+                "summary": "Get organization details (requires membership)",
                 "operationId": "e580f890eeb8200ab894ecb8654927c6",
                 "parameters": [
                     {
@@ -1635,10 +1730,80 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Organization details retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "organization": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string"
+                                                        },
+                                                        "avatar_url": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "user_role": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "owner",
+                                                                "admin",
+                                                                "member"
+                                                            ]
+                                                        },
+                                                        "members_count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "projects_count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "owner": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "email": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Not a member of this organization"
                     },
                     "404": {
                         "description": "Organization not found"
@@ -1654,7 +1819,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Update organization details",
+                "summary": "Update organization details (owner or admin only)",
                 "operationId": "c8d68fafd99b7ad6c200cb2fd6181f31",
                 "parameters": [
                     {
@@ -1674,12 +1839,10 @@
                                 "properties": {
                                     "name": {
                                         "type": "string",
-                                        "example": "Acme Corp",
                                         "maxLength": 255
                                     },
                                     "slug": {
                                         "type": "string",
-                                        "example": "acme-corp",
                                         "maxLength": 255
                                     }
                                 },
@@ -1690,16 +1853,43 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Organization updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "organization": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden — requires owner or admin role"
                     },
                     "404": {
                         "description": "Organization not found"
+                    },
+                    "409": {
+                        "description": "Slug already taken"
                     },
                     "422": {
                         "description": "Validation error"
@@ -1715,7 +1905,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Delete an organization",
+                "summary": "Delete an organization (owner only)",
                 "operationId": "c1d076832619143f1dc984fdc4506023",
                 "parameters": [
                     {
@@ -1729,13 +1919,29 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Organization deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden — owner only"
                     },
                     "404": {
                         "description": "Organization not found"
@@ -1753,7 +1959,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "List members of an organization",
+                "summary": "List members of an organization (requires membership)",
                 "operationId": "0c4e803831d17a8f8b0981467f98ff4f",
                 "parameters": [
                     {
@@ -1767,13 +1973,86 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Members retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "members": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "organization_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user_name": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "user_email": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "owner",
+                                                                    "admin",
+                                                                    "member"
+                                                                ]
+                                                            },
+                                                            "joined_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "nullable": true
+                                                            },
+                                                            "user": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Not a member of this organization"
                     },
                     "404": {
                         "description": "Organization not found"
@@ -1789,7 +2068,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Add a member to an organization",
+                "summary": "Add a member to an organization (owner or admin only)",
                 "operationId": "ccba92336af6106722515b4c58e3eafa",
                 "parameters": [
                     {
@@ -1829,20 +2108,47 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
+                    "201": {
+                        "description": "Member added",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "member": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden — requires owner or admin role"
                     },
                     "404": {
                         "description": "Organization or user not found"
+                    },
+                    "409": {
+                        "description": "User is already a member"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -1857,7 +2163,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Update the role of a member in an organization",
+                "summary": "Update a member's role (owner or admin only)",
                 "operationId": "f28ce2183808786b041c40ae669c791e",
                 "parameters": [
                     {
@@ -1901,10 +2207,31 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
+                        "description": "Member role updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "member": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -1913,7 +2240,10 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Organization or user not found"
+                        "description": "Organization or member not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
                     }
                 },
                 "security": [
@@ -1926,7 +2256,7 @@
                 "tags": [
                     "Organization"
                 ],
-                "summary": "Remove a member from an organization",
+                "summary": "Remove a member from an organization (owner or admin only)",
                 "operationId": "a576bb66e67b4479dd71dabfb5406fc0",
                 "parameters": [
                     {
@@ -1948,10 +2278,23 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request"
+                        "description": "Member removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -1960,7 +2303,7 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Organization or user not found"
+                        "description": "Organization or member not found"
                     }
                 },
                 "security": [
@@ -1989,13 +2332,97 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Projects retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "projects": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "organization_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "key": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "kanban",
+                                                                    "scrum"
+                                                                ]
+                                                            },
+                                                            "lead_id": {
+                                                                "type": "integer",
+                                                                "nullable": true
+                                                            },
+                                                            "is_archived": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "user_role": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "members_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "lead": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object",
+                                                                "nullable": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "User does not belong to the organization"
                     },
                     "404": {
                         "description": "Organization not found"
@@ -2039,7 +2466,18 @@
                                     },
                                     "key": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "maxLength": 10
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "kanban",
+                                            "scrum"
+                                        ]
                                     },
                                     "lead": {
                                         "type": "integer",
@@ -2052,8 +2490,32 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Project created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "project": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2062,7 +2524,10 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Organization not found"
+                        "description": "Organization or user not found"
+                    },
+                    "409": {
+                        "description": "Project key already exists in organization"
                     },
                     "422": {
                         "description": "Validation error"
@@ -2080,7 +2545,7 @@
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Get a specific project",
+                "summary": "Get project details",
                 "operationId": "ad9f37aeac07a72d8a4dc7a111b9cb1f",
                 "parameters": [
                     {
@@ -2094,13 +2559,104 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Project details retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "project": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "organization_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "key": {
+                                                            "type": "string"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "type": {
+                                                            "type": "string"
+                                                        },
+                                                        "lead_id": {
+                                                            "type": "integer",
+                                                            "nullable": true
+                                                        },
+                                                        "is_archived": {
+                                                            "type": "boolean"
+                                                        },
+                                                        "user_role": {
+                                                            "type": "string",
+                                                            "nullable": true
+                                                        },
+                                                        "members_count": {
+                                                            "type": "integer"
+                                                        },
+                                                        "organization": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "slug": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        },
+                                                        "lead": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "email": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "type": "object",
+                                                            "nullable": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "User does not have access to this project"
                     },
                     "404": {
                         "description": "Project not found"
@@ -2116,7 +2672,7 @@
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Update a specific project",
+                "summary": "Update a project",
                 "operationId": "f016f82d867b034f7da6dc64aafded44",
                 "parameters": [
                     {
@@ -2139,11 +2695,18 @@
                                     },
                                     "key": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "maxLength": 10
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
                                     },
                                     "lead": {
                                         "type": "integer",
                                         "nullable": true
+                                    },
+                                    "is_archived": {
+                                        "type": "boolean"
                                     }
                                 },
                                 "type": "object"
@@ -2153,7 +2716,31 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Project updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "project": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2162,7 +2749,10 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Project not found"
+                        "description": "Project or lead user not found"
+                    },
+                    "409": {
+                        "description": "Project key already exists"
                     },
                     "422": {
                         "description": "Validation error"
@@ -2178,7 +2768,7 @@
                 "tags": [
                     "Projects"
                 ],
-                "summary": "Delete a specific project",
+                "summary": "Delete a project",
                 "operationId": "d85eea3eedcb481c5d00c1cda422f697",
                 "parameters": [
                     {
@@ -2192,7 +2782,23 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Project deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2230,7 +2836,80 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Project members retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "members": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "project_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "user_name": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "user_email": {
+                                                                "type": "string",
+                                                                "nullable": true
+                                                            },
+                                                            "role": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "owner",
+                                                                    "admin",
+                                                                    "member"
+                                                                ]
+                                                            },
+                                                            "joined_at": {
+                                                                "type": "string",
+                                                                "format": "date-time",
+                                                                "nullable": true
+                                                            },
+                                                            "user": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "email": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2279,7 +2958,10 @@
                                     },
                                     "role": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "enum": [
+                                            "admin",
+                                            "member"
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -2288,8 +2970,32 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "OK"
+                    "201": {
+                        "description": "Member added to project",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "project_member": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2298,10 +3004,13 @@
                         "description": "Forbidden"
                     },
                     "404": {
-                        "description": "Project not found"
+                        "description": "Project or user not found"
+                    },
+                    "409": {
+                        "description": "User already in project"
                     },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Validation error or user not in organization"
                     }
                 },
                 "security": [
@@ -2337,13 +3046,20 @@
                     }
                 ],
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "role"
+                                ],
                                 "properties": {
                                     "role": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "enum": [
+                                            "admin",
+                                            "member"
+                                        ]
                                     }
                                 },
                                 "type": "object"
@@ -2353,7 +3069,31 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Member role updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "project_member": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
@@ -2400,7 +3140,23 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "Member removed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "true"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Unauthenticated"
